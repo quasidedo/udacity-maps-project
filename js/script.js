@@ -11,4 +11,10 @@ function initMap() {
         map: map,
         title: 'Ciudad de las Artes y las Ciencias'
     });
+    var infoWindow = new google.maps.InfoWindow({
+        content: 'Art and Science, What more do you need?'
+    });
+    marker.addListener('click', function() {
+        infoWindow.open(map, marker);
+    });
 }
