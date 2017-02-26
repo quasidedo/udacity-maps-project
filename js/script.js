@@ -5,16 +5,16 @@ function initMap() {
         center: {lat: 39.4689262, lng: -0.3846146},
         zoom: 13
     });
-    ciudadArtes = {lat: 39.4548751, lng:-0.3526791};
-    var marker = new google.maps.Marker({
-        position: ciudadArtes,
+    posCiudadArtes = {lat: 39.4548751, lng:-0.3526791};
+    var markerCiudadArtes = new google.maps.Marker({
+        position: posCiudadArtes,
         map: map,
         title: 'Ciudad de las Artes y las Ciencias'
     });
-    var infoWindow = new google.maps.InfoWindow({
+    var infoCiudadArtes = new google.maps.InfoWindow({
         content: 'Art and Science, What more do you need?'
     });
-    marker.addListener('click', function() {
-        infoWindow.open(map, marker);
+    markerCiudadArtes.addListener('click', function() {
+        infoCiudadArtes.open(map, markerCiudadArtes);
     });
 }
