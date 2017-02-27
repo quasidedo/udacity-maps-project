@@ -1,4 +1,5 @@
 var map;
+var markers = [];
 
 var Model = {
     places: [
@@ -21,7 +22,7 @@ var Model = {
             info: null
         },
         {
-            name: "Torres de Cuart",
+            name: "Torres de Quart",
             position: {lat: 39.4757442, lng:-0.386073},
             slogan: "Astonishing medieval wall",
             info: null
@@ -39,40 +40,48 @@ function initMap() {
 // Constructor creates a new map - only center and zoom are required.
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 39.4689262, lng: -0.3846146},
-        zoom: 13
+        zoom: 13,
+        mapTypeControl: false
     });
 
-    window.mapBounds = new google.maps.LatLngBounds();
+    infoWindow = new google.maps.InfoWindow();
 
     setMarkers(Model.places);
 
-    // posCiudadArtes = {lat: 39.4548751, lng:-0.3526791};
-    // var markerCiudadArtes = new google.maps.Marker({
-    //     position: posCiudadArtes,
-    //     map: map,
-    //     title: 'Ciudad de las Artes y las Ciencias'
-    // });
-    // var infoCiudadArtes = new google.maps.InfoWindow({
-    //     content: 'Art and Science, What more do you need?'
-    // });
-    // markerCiudadArtes.addListener('click', function() {
-    //     infoCiudadArtes.open(map, markerCiudadArtes);
-    // });
 }
 
 function setMarkers(locations) {
     var location;
-    var i;
-    var max = locations.length;
 
-    for(i = 0; i < max; i++) {
+    for(var i = 0; i < locations.length; i++) {
+
         location = locations[i];
-        bounds = window.mapBounds;
+
         marker = new google.maps.Marker({
             position: location.position,
+            title: location.name,
             animation: google.maps.Animation.DROP,
-            map: map,
-            title: location.name
+            map: map
+
+        });
+
+        markers.push(marker);
+
+        marker.addListener('click', function() {
+            populateInfoWindow(this, infoWindow);
+        });
+    }
+}
+
+function populateInfoWindow(marker, infowindow) {
+    // Check to make sure the infowindow is not already opened on this marker.
+    if (infowindow.marker != marker) {
+        infowindow.marker = marker;
+        infowindow.setContent('<h3>' + marker.title + '</h3>');
+        infowindow.open(map, marker);
+        // Make sure the marker property is cleared if the infowindow is closed.
+        infowindow.addListener('closeclick', function() {
+            infowindow.marker = null;
         });
     }
 }
