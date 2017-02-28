@@ -9,3 +9,14 @@ body {
 #map {
     height: 100%;
 }
+
+.gallery {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.gallery img {
+    max-width: 150px;
+    margin: 0px 10px;
+}

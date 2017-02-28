@@ -77,11 +77,29 @@ function populateInfoWindow(marker, infowindow) {
     // Check to make sure the infowindow is not already opened on this marker.
     if (infowindow.marker != marker) {
         infowindow.marker = marker;
-        infowindow.setContent('<h3>' + marker.title + '</h3>');
+        infowindow.setContent("<h3>" + marker.title + "</h3>" + "<div class='gallery'><div>");
+        getPhotos(marker.title);
         infowindow.open(map, marker);
         // Make sure the marker property is cleared if the infowindow is closed.
-        infowindow.addListener('closeclick', function() {
+        infowindow.addListener("closeclick", function() {
             infowindow.marker = null;
         });
     }
+}
+
+function getPhotos(location) {
+    $.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
+        {
+            tags: location,
+            tagmode: "any",
+            format: "json"
+        },
+    function(data) {
+        $.each(data.items, function(i, item) {
+            $("<img>").attr("src", item.media.m).appendTo(".gallery");
+            if(i >= 2) {
+                return false;
+            }
+        });
+    });
 }
