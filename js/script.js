@@ -4,40 +4,38 @@ var markers = [];
 var Model = {
     places: [
         {
+            name: "Bioparc",
+            position: {lat: 39.4786806, lng:-0.4134128}
+        },
+        {
+            name: "Catedral de Valencia",
+            position: {lat: 39.4755957, lng:-0.3774011}
+        },
+        {
             name: "Ciudad de las Artes y las Ciencias",
-            position: {lat: 39.4548751, lng:-0.3526791},
-            slogan: "Art and Science, What more do you need?",
-            info: null
+            position: {lat: 39.4548751, lng:-0.3526791}
         },
         {
             name: "L'Oceanogràfic",
-            position: {lat: 39.4530477, lng:-0.3493372},
-            slogan: "Look out! A shark!",
-            info: null
-        },
-        {
-            name: "Bioparc",
-            position: {lat: 39.4786806, lng:-0.4134128},
-            slogan: "Wild Nature in the middle of the city",
-            info: null
-        },
-        {
-            name: "Torres de Quart",
-            position: {lat: 39.4757442, lng:-0.386073},
-            slogan: "Astonishing medieval wall",
-            info: null
+            position: {lat: 39.4530477, lng:-0.3493372}
         },
         {
             name: "Parque Gulliver",
-            position: {lat: 39.4625232, lng:-0.3617788},
-            slogan: "Feel like a Lilliputian",
-            info: null
+            position: {lat: 39.4625232, lng:-0.3617788}
+        },
+        {
+            name: "Playa de la Malvarrosa",
+            position: {lat: 39.4769315, lng:-0.3318832}
+        },
+        {
+            name: "Torres de Quart",
+            position: {lat: 39.4757442, lng:-0.386073}
         }
     ]
 }
 
 function initMap() {
-// Constructor creates a new map - only center and zoom are required.
+// Constructor creates a new map
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 39.4689262, lng: -0.3846146},
         zoom: 13,
@@ -48,6 +46,8 @@ function initMap() {
 
     setMarkers(Model.places);
 
+    ko.applyBindings(octopus);
+    octopus.addMarkers();
 }
 
 function setMarkers(locations) {
@@ -103,3 +103,62 @@ function getPhotos(location) {
         });
     });
 }
+
+function toggleMenu() {
+    $("#myDropdown").toggleClass("show");
+}
+
+var placeElement = function(place) {
+    this.name = place.name;
+    this.position = place.position;
+    this.currentSelection = ko.observable(true);
+};
+
+var ViewModel = function() {
+
+    var self = this;
+    var place;
+    var marker;
+    var placeItem;
+    self.positionObserverArray = ko.observableArray();
+
+    for (var i = 0; i < Model.places.length; i++) {
+        place = new placeElement(Model.places[i]);
+        self.positionObserverArray.push(place);
+    }
+
+    self.itemClick = function(placeItem) {
+        var marker = placeItem.marker;
+        google.maps.event.trigger(marker, 'click');
+    };
+
+    self.searchVenue  = ko.observable('');
+
+    self.filterSearch = ko.computed(function() {
+
+        if (!self.searchVenue() || self.searchVenue === undefined) {
+            for (var i = 0; i < self.positionObserverArray().length; i++) {
+                if (self.positionObserverArray()[i].marker !== undefined) {
+                    self.positionObserverArray()[i].marker.setVisible(true);
+                }
+            }
+            return self.positionObserverArray();
+        } else {
+            var filter = self.searchVenue().toLowerCase();
+            return ko.utils.arrayFilter(self.positionObserverArray(), function(
+            location) {
+                var match = location.name.toLowerCase().indexOf(filter) > -1;
+                location.marker.setVisible(match);
+                return match;
+            });
+        }
+    });
+
+    this.addMarkers = function() {
+        this.positionObserverArray().forEach(function(place, i) {
+            place.marker = markers[i];
+        });
+    };
+};
+
+var octopus = new ViewModel();

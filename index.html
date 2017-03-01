@@ -12,9 +12,19 @@
     <script type="text/javascript" src="js/script.js"></script>
 </head>
 <body>
-    <div id="map">
 
+    <div class="dropdown">
+        <button onclick="toggleMenu()" class="dropbtn">What to see in Valencia...</button>
+        <div id="myDropdown" class="dropdown-content">
+            <input data-bind=" textInput: searchVenue" type="text" placeholder="Search..." id="myInput">
+            <div class="menu" data-bind="foreach: filterSearch" class='wrap'>
+                <p class="place" data-bind="text: name, click: $root.itemClick"></p>
+            </div>
+        </div>
     </div>
+
+
+    <div id='map'></div>
 
     <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBof7wQscB9AA-WzJXWY_k83dOB1bNWajE&v=3&callback=initMap">
