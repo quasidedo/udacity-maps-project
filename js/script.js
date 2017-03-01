@@ -88,19 +88,26 @@ function populateInfoWindow(marker, infowindow) {
 }
 
 function getPhotos(location) {
-    $.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
+    $.ajax({
+        dataType: "json",
+        url: "http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
+        data:
         {
             tags: location,
             tagmode: "any",
             format: "json"
         },
-    function(data) {
-        $.each(data.items, function(i, item) {
-            $("<img>").attr("src", item.media.m).appendTo(".gallery");
-            if(i >= 2) {
-                return false;
-            }
-        });
+        success: function(data) {
+            $.each(data.items, function(i, item) {
+                $("<img>").attr("src", item.media.m).appendTo(".gallery");
+                if(i >= 2) {
+                    return false;
+                }
+            });
+        },
+        error: function(data) {
+            $("<p>It seems there is a problem loading Flickr photos, sorry! Try refreshing the page.</p>").appendTo(".gallery");
+        }
     });
 }
 
