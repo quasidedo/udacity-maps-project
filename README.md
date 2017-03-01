@@ -4,7 +4,7 @@ This project shows some interesting places to visit in Valencia, Spain. Users ca
 
 ## How to use this app
 
-You can download it, unzip it and run index.html. Even better, you can try this online version:
+You can download it, unzip it and run index.html.
 
 Display a place information by clicking in its marker or in its name at the dropdown menu.
 
